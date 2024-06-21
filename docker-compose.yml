@@ -7,6 +7,7 @@ services:
     environment:
       - REPO=<owner>/<repo>
       - REG_TOKEN=<reg-token-for-self-hosted-runner>
+      - NAME=<runner-name>
     deploy:
       mode: replicated
       replicas: 2
