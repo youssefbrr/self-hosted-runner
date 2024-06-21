@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  runner:
+    image: youssefbrr/github-actions:latest # You can use this image or build your own
+    restart: always
+    environment:
+      - REPO=<owner>/<repo>
+      - REG_TOKEN=<reg-token-for-self-hosted-runner>
+    deploy:
+      mode: replicated
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.4'
+          memory: 256M
