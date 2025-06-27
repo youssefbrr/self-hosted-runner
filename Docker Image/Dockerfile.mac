@@ -1,8 +1,0 @@
-FROM ubuntu:latest
-
-# Copy the start script to the runner's home directory and make it executable
-COPY start-mac.sh /home/runner/start.sh
-RUN chmod +x /home/runner/start.sh
-
-# Define the entrypoint
-ENTRYPOINT ["/home/runner/start.sh"]
