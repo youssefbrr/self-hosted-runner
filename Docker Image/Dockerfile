@@ -22,8 +22,7 @@ RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
 RUN chown -R docker /home/docker && /home/docker/actions-runner/bin/installdependencies.sh
 
 # Copy the start script and make it executable
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+COPY --chmod=+x start.sh /start.sh
 
 # Switch to docker user
 USER docker
