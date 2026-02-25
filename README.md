@@ -152,7 +152,7 @@ Welcome to the GitHub Self-Hosted Runner Dockerization repository. This project 
 
 ### Environment Variables
 
-- `REPO`: The GitHub repository to register the runner to (format: `<owner>/<repo>`).
+- `REPO`: The GitHub repository to register the runner to (format: `<owner>/<repo>`). It can also be set to an organization instead of a repository (format: `<owner>`).
 - `REG_TOKEN`: The registration token for the self-hosted runner from the GitHub repository settings.
 - `NAME`: The name of the self-hosted runner.
 
