@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   runner:
+    build: .
     image: youssefbrr/github-actions:latest # You can use this image or build your own
     restart: always
     environment:

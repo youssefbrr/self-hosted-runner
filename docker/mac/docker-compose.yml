@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   runner:
+    build: .
     image: custom-github-runner-mac:latest
     platform: linux/arm64
     restart: always
