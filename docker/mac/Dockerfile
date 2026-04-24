@@ -33,7 +33,7 @@ RUN cd /home/runner/actions-runner \
     && ./bin/installdependencies.sh
 
 # Copy the start script and make it executable
-COPY start-mac.sh /home/runner/start.sh
+COPY start.sh /home/runner/start.sh
 RUN chown runner:runner /home/runner/start.sh && chmod +x /home/runner/start.sh
 
 # Switch to runner user
