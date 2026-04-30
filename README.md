@@ -33,10 +33,23 @@ Welcome to the GitHub Self-Hosted Runner Dockerization repository. This project 
 
 1. Clone the repository:
 
-   ```sh
-   git clone https://github.com/youssefbrr/self-hosted-runner.git
-   cd self-hosted-runner
-   ```
+    ```sh
+    git clone https://github.com/youssefbrr/self-hosted-runner.git
+    cd self-hosted-runner
+    ```
+
+2. Copy the example environment file and fill in your values:
+
+    ```sh
+    cp .env.example .env
+    # Edit .env to add your REPO, REG_TOKEN, and NAME values
+    ```
+
+3. Deploy the self-hosted runner:
+
+    ```sh
+    docker-compose -f docker/linux/docker-compose.yml up -d
+    ```
 
 2. Edit the `docker/linux/docker-compose.yml` file to specify your repository, registration token, and runner name.
 
