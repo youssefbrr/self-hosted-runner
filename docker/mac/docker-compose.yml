@@ -6,10 +6,8 @@ services:
     image: custom-github-runner-mac:latest
     platform: linux/arm64
     restart: always
-    environment:
-      - REPO=<owner>/<repo>
-      - REG_TOKEN=<reg-token-for-self-hosted-runner>
-      - NAME=<runner-name>
+    env_file:
+      - ../../.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:

@@ -5,10 +5,8 @@ services:
     build: .
     image: youssefbrr/github-actions:latest # You can use this image or build your own
     restart: always
-    environment:
-      - REPO=<owner>/<repo>
-      - REG_TOKEN=<reg-token-for-self-hosted-runner>
-      - NAME=<runner-name>
+    env_file:
+      - ../../.env
     healthcheck:
       test: ["CMD", "pgrep", "-f", "run.sh"]
       interval: 30s
