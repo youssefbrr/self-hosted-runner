@@ -12,6 +12,12 @@ services:
       - NAME=<runner-name>
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "run.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     deploy:
       mode: replicated
       replicas: 1

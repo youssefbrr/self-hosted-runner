@@ -122,3 +122,7 @@ For macOS, keep in mind:
 1. You need to have Docker Desktop for Mac installed and running.
 2. The macOS runner uses different base images and paths compared to the Linux version.
 3. Performance may differ from the Linux version due to the virtualization layer.
+
+## Healthchecks
+
+Both Linux and macOS services include healthchecks that verify the runner process is running using `pgrep -f run.sh`. Health checks begin after a 40s start period and run every 30s.
