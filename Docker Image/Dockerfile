@@ -24,6 +24,9 @@ RUN chown -R docker /home/docker && /home/docker/actions-runner/bin/installdepen
 # Copy the start script and make it executable
 COPY --chmod=+x start.sh /start.sh
 
+# Copy the health check script and make it executable
+COPY --chmod=+x healthcheck.sh /healthcheck.sh
+
 # Switch to docker user
 USER docker
 

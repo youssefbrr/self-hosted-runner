@@ -4,5 +4,9 @@ FROM ubuntu:latest
 COPY start-mac.sh /home/runner/start.sh
 RUN chmod +x /home/runner/start.sh
 
+# Copy the health check script and make it executable
+COPY healthcheck.sh /home/runner/healthcheck.sh
+RUN chmod +x /home/runner/healthcheck.sh
+
 # Define the entrypoint
 ENTRYPOINT ["/home/runner/start.sh"]

@@ -18,3 +18,9 @@ services:
         reservations:
           cpus: '0.4'
           memory: 256M
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
