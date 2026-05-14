@@ -51,13 +51,6 @@ Welcome to the GitHub Self-Hosted Runner Dockerization repository. This project 
     docker-compose -f docker/linux/docker-compose.yml up -d
     ```
 
-2. Edit the `docker/linux/docker-compose.yml` file to specify your repository, registration token, and runner name.
-
-3. Deploy the self-hosted runner:
-   ```sh
-   docker-compose -f docker/linux/docker-compose.yml up -d
-   ```
-
 ### Using Docker Compose on macOS
 
 1. Clone the repository:
@@ -67,9 +60,15 @@ Welcome to the GitHub Self-Hosted Runner Dockerization repository. This project 
    cd self-hosted-runner
    ```
 
-2. Edit the `docker/mac/docker-compose.yml` file to specify your repository, registration token, and runner name.
+2. Copy the example environment file and fill in your values:
+
+   ```sh
+   cp .env.example .env
+   # Edit .env to add your REPO, REG_TOKEN, and NAME values
+   ```
 
 3. Deploy the self-hosted runner:
+
    ```sh
    docker-compose -f docker/mac/docker-compose.yml up -d
    ```
@@ -133,7 +132,7 @@ Welcome to the GitHub Self-Hosted Runner Dockerization repository. This project 
 For macOS, keep in mind:
 
 1. You need to have Docker Desktop for Mac installed and running.
-2. The macOS runner uses different base images and paths compared to the Linux version.
+2. The macOS runner targets `linux/arm64` and runs emulated on Apple Silicon via Docker Desktop.
 3. Performance may differ from the Linux version due to the virtualization layer.
 
 ## Healthchecks

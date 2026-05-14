@@ -1,10 +1,11 @@
 #!/bin/bash
 
-REPO=$REPO
-REG_TOKEN=$REG_TOKEN
-NAME=$NAME
+: "${REPO:?REPO env var required}"
+: "${REG_TOKEN:?REG_TOKEN env var required}"
+: "${NAME:?NAME env var required}"
 
 cd /home/runner/actions-runner || exit
+
 ./config.sh --url https://github.com/${REPO} --token ${REG_TOKEN} --name ${NAME}
 
 cleanup() {
@@ -15,4 +16,4 @@ cleanup() {
 trap 'cleanup; exit 130' INT
 trap 'cleanup; exit 143' TERM
 
-./run.sh & wait $! 
+./run.sh & wait $!

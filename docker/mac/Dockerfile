@@ -1,6 +1,6 @@
-FROM --platform=linux/arm64 ubuntu:latest
+FROM --platform=linux/arm64 ubuntu:24.04
 
-ARG RUNNER_VERSION="2.317.0"
+ARG RUNNER_VERSION="2.331.0"
 
 # Add a user for the runner
 RUN useradd -m -s /bin/bash runner
@@ -19,8 +19,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up the runner user
-RUN echo "runner ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
 WORKDIR /home/runner
 
 # Set up the actions runner for ARM64
