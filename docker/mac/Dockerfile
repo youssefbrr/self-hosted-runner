@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     zlib1g \
     iputils-ping \
     openssh-client \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Add runner user to docker group and allow GID fix at startup
