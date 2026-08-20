@@ -2,6 +2,7 @@ FROM ubuntu:24.04
 
 ARG RUNNER_VERSION="2.331.0"
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TARGETARCH
 
 # Update and upgrade the system
 RUN apt update -y && apt upgrade -y && rm -rf /var/lib/apt/lists/*
@@ -20,17 +21,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && chmod a+r /etc/apt/keyrings/docker.asc \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" > /etc/apt/sources.list.d/docker.list \
     && apt-get update && apt-get install -y --no-install-recommends \
-    build-essential docker-buildx-plugin docker-ce-cli docker-compose-plugin gh git jq libffi-dev libssl-dev \
+    build-essential docker-buildx-plugin docker-ce-cli docker-compose-plugin gh git jq libffi-dev libssl-dev unzip \
     python3 python3-dev python3-pip python3-venv ssh sudo \
     && rm -rf /var/lib/apt/lists/*
 
 # Add docker user to docker group and allow GID fix at startup
 RUN usermod -aG docker docker \
     && echo "docker ALL=(root) NOPASSWD: /usr/sbin/groupmod" >> /etc/sudoers
-# Set up the actions runner
-RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
-    && curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
-    && tar xzf actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+# Set up the actions runner (map Docker arch to the runner's release arch naming)
+RUN case "${TARGETARCH}" in \
+      amd64) RUNNER_ARCH="x64" ;; \
+      arm64) RUNNER_ARCH="arm64" ;; \
+      *) echo "Unsupported architecture: ${TARGETARCH}" && exit 1 ;; \
+    esac \
+    && cd /home/docker && mkdir actions-runner && cd actions-runner \
+    && curl -o actions-runner-linux-${RUNNER_ARCH}-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-${RUNNER_ARCH}-${RUNNER_VERSION}.tar.gz \
+    && tar xzf actions-runner-linux-${RUNNER_ARCH}-${RUNNER_VERSION}.tar.gz
 
 # Change ownership to docker user and install dependencies
 RUN chown -R docker /home/docker && /home/docker/actions-runner/bin/installdependencies.sh
