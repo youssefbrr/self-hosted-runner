@@ -2,7 +2,6 @@
 
 : "${REPO:?REPO env var required}"
 : "${REG_TOKEN:?REG_TOKEN env var required}"
-: "${NAME:?NAME env var required}"
 
 if [ -S /var/run/docker.sock ]; then
     DOCKER_GID=$(stat -c '%g' /var/run/docker.sock)
@@ -11,8 +10,9 @@ fi
 
 cd /home/docker/actions-runner || exit
 
-CONFIG_ARGS="--url https://github.com/${REPO} --token ${REG_TOKEN} --name ${NAME}"
+CONFIG_ARGS="--url https://github.com/${REPO} --token ${REG_TOKEN}"
 
+[ -n "${NAME}" ]         && CONFIG_ARGS="${CONFIG_ARGS} --name ${NAME}"
 [ -n "${LABELS}" ]       && CONFIG_ARGS="${CONFIG_ARGS} --labels ${LABELS}"
 [ -n "${RUNNER_GROUP}" ] && CONFIG_ARGS="${CONFIG_ARGS} --runnergroup ${RUNNER_GROUP}"
 [ -n "${WORK_DIR}" ]     && CONFIG_ARGS="${CONFIG_ARGS} --work ${WORK_DIR}"
