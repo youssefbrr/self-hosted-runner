@@ -49,7 +49,7 @@ Both variants support pre-built images from GHCR. By default, `docker-compose up
 ## Features
 
 - **Zero-config start** — set 3 env vars and run
-- **Clean shutdown** — SIGINT/SIGTERM deregisters the runner automatically
+- **Persistent runner state** — runner registration is reused across restarts
 - **Scalable** — Linux defaults to 2 replicas; tune with `deploy.replicas`
 - **Ephemeral mode** — run once and self-destruct (`EPHEMERAL=true`)
 - **Docker-in-Docker** — macOS image mounts the Docker socket for nested builds
@@ -98,6 +98,7 @@ Copy `.env.example` to `.env` and set your values. The `.env` file is gitignored
 | `WORK_DIR` | `_work` | Workspace directory inside the container |
 | `EPHEMERAL` | `false` | `true` → deregister after one job |
 | `DISABLE_AUTO_UPDATE` | `false` | `true` → prevent runner self-updates |
+| `REMOVE_RUNNER_ON_EXIT` | `false` | `true` → deregister runner when container stops (requires fresh `REG_TOKEN`) |
 
 ### Override Runner Version
 
@@ -155,6 +156,23 @@ deploy:
 
 ---
 
+## Persistence Across Restarts
+
+Both compose files mount a named volume to persist the runner home directory:
+
+- Linux: `/home/docker/actions-runner`
+- ARM64: `/home/runner/actions-runner`
+
+This keeps the runner registration/configuration after container restarts or recreates, so you don't need to re-register with a new token every time.
+
+If you want the old behavior (always deregister on shutdown), set:
+
+```env
+REMOVE_RUNNER_ON_EXIT=true
+```
+
+---
+
 ## Publishing Images
 
 GitHub Actions workflows automatically build and publish both images to GHCR on version tag pushes (`v*`).
@@ -191,7 +209,7 @@ docker-compose -f docker/linux/docker-compose.yml ps
 ```sh
 docker-compose -f docker/linux/docker-compose.yml down
 ```
-`down` sends SIGTERM → `start.sh` cleanup → runner deregisters cleanly.
+If you want automatic deregistration when containers stop, set `REMOVE_RUNNER_ON_EXIT=true` and use a fresh `REG_TOKEN`.
 
 ---
 
