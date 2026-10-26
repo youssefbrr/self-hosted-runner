@@ -8,6 +8,7 @@ services:
     env_file:
       - ../../.env
     volumes:
+      - runner-data:/home/runner/actions-runner
       - /var/run/docker.sock:/var/run/docker.sock
     logging:
       driver: "json-file"
@@ -30,3 +31,6 @@ services:
         reservations:
           cpus: "0.5"
           memory: 512M
+
+volumes:
+  runner-data:

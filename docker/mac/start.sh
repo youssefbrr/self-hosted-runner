@@ -1,7 +1,6 @@
 #!/bin/bash
 
 : "${REPO:?REPO env var required}"
-: "${REG_TOKEN:?REG_TOKEN env var required}"
 : "${NAME:?NAME env var required}"
 
 if [ -S /var/run/docker.sock ]; then
@@ -11,19 +10,30 @@ fi
 
 cd /home/runner/actions-runner || exit
 
-CONFIG_ARGS="--url https://github.com/${REPO} --token ${REG_TOKEN} --name ${NAME}"
+if [ -f .runner ]; then
+  echo "Existing runner configuration detected, skipping registration."
+else
+  : "${REG_TOKEN:?REG_TOKEN env var required for initial registration}"
 
-[ -n "${LABELS}" ]       && CONFIG_ARGS="${CONFIG_ARGS} --labels ${LABELS}"
-[ -n "${RUNNER_GROUP}" ] && CONFIG_ARGS="${CONFIG_ARGS} --runnergroup ${RUNNER_GROUP}"
-[ -n "${WORK_DIR}" ]     && CONFIG_ARGS="${CONFIG_ARGS} --work ${WORK_DIR}"
-[ "${EPHEMERAL}" = "true" ]            && CONFIG_ARGS="${CONFIG_ARGS} --ephemeral"
-[ "${DISABLE_AUTO_UPDATE}" = "true" ]  && CONFIG_ARGS="${CONFIG_ARGS} --disableupdate"
+  CONFIG_ARGS="--url https://github.com/${REPO} --token ${REG_TOKEN} --name ${NAME}"
 
-./config.sh ${CONFIG_ARGS}
+  [ -n "${LABELS}" ]       && CONFIG_ARGS="${CONFIG_ARGS} --labels ${LABELS}"
+  [ -n "${RUNNER_GROUP}" ] && CONFIG_ARGS="${CONFIG_ARGS} --runnergroup ${RUNNER_GROUP}"
+  [ -n "${WORK_DIR}" ]     && CONFIG_ARGS="${CONFIG_ARGS} --work ${WORK_DIR}"
+  [ "${EPHEMERAL}" = "true" ]            && CONFIG_ARGS="${CONFIG_ARGS} --ephemeral"
+  [ "${DISABLE_AUTO_UPDATE}" = "true" ]  && CONFIG_ARGS="${CONFIG_ARGS} --disableupdate"
+
+  ./config.sh ${CONFIG_ARGS}
+fi
 
 cleanup() {
-  echo "Removing runner..."
-  ./config.sh remove --unattended --token ${REG_TOKEN}
+  if [ "${REMOVE_RUNNER_ON_EXIT}" = "true" ] && [ -f .runner ]; then
+    : "${REG_TOKEN:?REG_TOKEN env var required when REMOVE_RUNNER_ON_EXIT=true}"
+    echo "Removing runner..."
+    ./config.sh remove --unattended --token ${REG_TOKEN}
+  else
+    echo "Skipping runner removal."
+  fi
 }
 
 trap 'cleanup; exit 130' INT
